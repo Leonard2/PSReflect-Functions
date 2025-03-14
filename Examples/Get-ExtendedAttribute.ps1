@@ -15,18 +15,18 @@
     {
         if($PSCmdlet.ParameterSetName -eq 'Directory')
         {
-            $FileMode = $FILE_DIRECTORY_FILE
-            $FullName = $Directory.FullName
+            $FileMode = 'FILE_DIRECTORY_FILE'
+            $FullName = "\??\" + $Directory.FullName
         }
         else
         {
-            $FileMode = $FILE_NON_DIRECTORY_FILE
-            $FullName = $File.FullName
+            $FileMode = 'FILE_NON_DIRECTORY_FILE'
+            $FullName = "\??\" + $File.FullName
         }
     
-        $FileHandle = NtOpenFile -FilePath $FullName -AccessMask ($READ_CONTROL -bor $FILE_READ_EA) -ShareAccess ([System.IO.FileShare]::Delete -bor [System.IO.FileShare]::ReadWrite) -OpenOptions ($FILE_OPEN_FOR_BACKUP_INTENT -bor $FILE_RANDOM_ACCESS -bor $FileMode)
+        $FileHandle = NtOpenFile -FilePath $FullName -DesiredAccess @('READ_CONTROL', 'FILE_READ_EA') -ShareAccess @('DELETE', 'READ', 'WRITE') -OpenOptions @('FILE_OPEN_FOR_BACKUP_INTENT', 'FILE_RANDOM_ACCESS', $FileMode)
 
-        $EA = ZwQueryEaFile -FileHandle $FileHandle
+        $EA = NtQueryEaFile -FileHandle $FileHandle
             
         if($EA -ne $null)
         {
@@ -38,5 +38,12 @@
     catch
     {
 
+    }
+    finally
+    {
+        if($FileHandle -ne $null)
+        {
+            NtClose -KeyHandle $FileHandle
+        }
     }
 }
