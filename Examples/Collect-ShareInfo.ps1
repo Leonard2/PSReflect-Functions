@@ -16,7 +16,7 @@ function Collect-ShareInfo
     # Generates a list of computers in the domain
     # This can be replaced if there is a different preferred way of referencing "target systems"
     Write-Verbose -Message "Enumerating Domain Computers"
-    $Computers = ([adsisearcher]“objectcategory=computer”).FindAll().Properties.dnshostname
+    $Computers = ([adsisearcher]"objectcategory=computer").FindAll().Properties.dnshostname
  
     # Enumerates traditional SMB File Shares on all domain computers
     # Information Level 502 is necessary to collect security descriptors for the shares
