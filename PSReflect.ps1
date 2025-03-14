@@ -48,8 +48,16 @@ $Module = New-InMemoryModule -ModuleName Win32
 
     $DynAssembly = New-Object Reflection.AssemblyName($ModuleName)
     $Domain = $AppDomain
-    $AssemblyBuilder = $Domain.DefineDynamicAssembly($DynAssembly, 'Run')
-    $ModuleBuilder = $AssemblyBuilder.DefineDynamicModule($ModuleName, $False)
+    if($PSVersionTable['PSEdition'] -eq 'Core')
+    {
+       $AssemblyBuilder = [System.Reflection.Emit.AssemblyBuilder]::DefineDynamicAssembly($DynAssembly, 'Run')
+       $ModuleBuilder = $AssemblyBuilder.DefineDynamicModule($ModuleName)
+    }
+    else
+    {
+        $AssemblyBuilder = $Domain.DefineDynamicAssembly($DynAssembly, 'Run')
+        $ModuleBuilder = $AssemblyBuilder.DefineDynamicModule($ModuleName, $False)
+    }
 
     return $ModuleBuilder
 }
