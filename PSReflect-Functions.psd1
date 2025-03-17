@@ -173,6 +173,7 @@ FunctionsToExport = @(
     'NtDuplicateObject',
     'NtEnumerateKey',
     'NtEnumerateValueKey',
+    'NtOpenFile',
     'NtOpenKey',
     'NtQueryEaFile',
     'NtQueryInformationFile',
